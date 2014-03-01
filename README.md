@@ -17,9 +17,9 @@ Using
 Add the following mappings to your vimrc, feel free to change from using the
 arrows to something more to your vim usage.
 
-```viml
-    vmap <unique> <up>    <Plug>SchleppUp
-    vmap <unique> <down>  <Plug>SchleppDown
-    vmap <unique> <left>  <Plug>SchleppLeft
-    vmap <unique> <right> <Plug>SchleppRight
+```vimscript
+vmap <unique> <up>    <Plug>SchleppUp
+vmap <unique> <down>  <Plug>SchleppDown
+vmap <unique> <left>  <Plug>SchleppLeft
+vmap <unique> <right> <Plug>SchleppRight
 ```
