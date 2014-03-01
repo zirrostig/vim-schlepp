@@ -12,7 +12,7 @@ respecting other text around it.
 Right now it only supports Visual-Line mode, but Visual-Block mode will be added
 soon.
 
-Using
+Setup
 =====
 Add the following mappings to your vimrc, feel free to change from using the
 arrows to something more to your vim usage.
@@ -22,4 +22,15 @@ vmap <unique> <up>    <Plug>SchleppUp
 vmap <unique> <down>  <Plug>SchleppDown
 vmap <unique> <left>  <Plug>SchleppLeft
 vmap <unique> <right> <Plug>SchleppRight
+```
+
+When moving text left, Schlepp by default does not allow you to move left if any
+text is all the way left. eg
+```text
+All the way left text cannot be moved left
+    Even though this text can be
+```
+To allow the 'Squishing' of text add this line to your vimrc
+```vimscript
+let g:Schlepp#AllowSquishing = 1
 ```
