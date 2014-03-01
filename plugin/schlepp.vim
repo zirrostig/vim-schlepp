@@ -4,7 +4,7 @@
 "License:       VIM
 "
 "Inspired by Damian Conway's DragVisuals
-"  If you have not watched Damian Conway's Instantly Better Vim, go do so.
+"  If you have not watched Damian Conway's More Instantly Better Vim, go do so.
 "  http://programming.oreilly.com/2013/10/more-instantly-better-vim.html
 "
 "This differs in that it is an attempt to improve the code, make it faster and
