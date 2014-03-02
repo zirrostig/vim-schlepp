@@ -85,20 +85,22 @@ function! s:SchleppLines(dir, fline, lline)
 
     if (a:dir ==? "up" || a:dir ==? "k") "{{{ Up
         if a:fline == 1 "First lines of file, move everything else down
-            execute "normal! '>o\<Esc>gv"
+            call append(a:lline, "")
+            call s:ResetSelection()
         else
             execute "normal! gvdkP" . l:reselect
         endif "}}}
     elseif (a:dir ==? "down" || a:dir ==? "j") "{{{ Down
         if a:lline == line("$") "Moving down past EOF
-            execute "normal! '<O\<Esc>gv"
+            call append(a:fline - 1, "")
+            call s:ResetSelection()
         else
             execute "normal! gvdp" . l:reselect
         endif "}}}
     elseif (a:dir ==? "right" || a:dir ==? "l") "{{{ Right
         for l:linenum in range(a:fline, a:lline)
             let l:line = getline(l:linenum)
-            "Only insert space if the line is empty
+            "Only insert space if the line is not empty
             if match(l:line, "^$") == -1
                 call setline(linenum, " ".l:line)
             endif
@@ -122,14 +124,14 @@ function! s:SchleppLines(dir, fline, lline)
     endif "}}}
 endfunction "}}}
 "{{{ SchleppBlock
-function! s:SchleppBlock(d)
-"  Logic for moving a visual block selection, this is much more complicated than
-"  lines since I have to be able to part text in order to insert the incoming
-"  line
-"  TODO:
-"       Implement
-
-endfunction "}}}
+" function! s:SchleppBlock(d)
+" "  Logic for moving a visual block selection, this is much more complicated than
+" "  lines since I have to be able to part text in order to insert the incoming
+" "  line
+" "  TODO:
+" "       Implement
+"     return
+" endfunction "}}}
 "{{{ Utility Functions
 function! s:ResetSelection()
     execute "normal \<Esc>gv"
