@@ -1,6 +1,6 @@
 "Schlepp.vim - Easy movement of lines/blocks of text
 "Maintainer:    Zachary Stigall <zirrostig <at> lanfort.org>
-"Date:          28 Feb 2014
+"Date:          2 March 2014
 "License:       VIM
 "
 "Inspired by Damian Conway's DragVisuals
@@ -12,11 +12,11 @@
 "when you least expect it.
 "
 "IDEAS and TODO
+"   Suppress Messages about 'x fewer lines'
 "   Make movement with recalc indent
-"   Don't use Temp Mappings
-"   Don't affect the users command and search history
-"   UndoJoin needs to not join between Line and Block modes (may not already,
-"       untested)
+"   Don't affect the users command and search history (Is this happening?)
+"   UndoJoin needs to not join between Line and Block modes (may not already - untested)
+"   Add padding function, that inserts a space or newline in the direction specified
 
 "====[ Core Implementation ]==================================================
 
@@ -37,11 +37,11 @@ noremap <SID>SchleppLeft  :call <SID>Schlepp("Left")<CR>
 noremap <SID>SchleppRight :call <SID>Schlepp("Right")<CR>
 "}}}
 "{{{ Schlepp
-function! s:Schlepp(d) range
+function! s:Schlepp(dir) range
 "  The main function that acts as an entrant function to be called by the user
 "  with a desired direction to move the seleceted text.
 "  TODO:
-"       Make range function
+"       Work with a count specifier eg. [count]<Up> moves lines count times
 "       Maybe: Make word with a motion
 "
     "Get what visual mode was being used
@@ -56,49 +56,52 @@ function! s:Schlepp(d) range
         call s:ResetSelection()
     endif
 
+    echom l:md
+
+
     "Branch off into specilized functions for each mode, check for undojoin
     if l:md ==# "V"
         if s:CheckUndo(l:md)
-            undojoin | call s:SchleppLines(a:d, a:firstline, a:lastline)
+            undojoin | call s:SchleppLines(a:dir)
         else
-            call s:SchleppLines(a:d, a:firstline, a:lastline)
+            call s:SchleppLines(a:dir)
         endif
-    elseif l:md ==# "CTRL-V"
+    elseif l:md ==# ""
         if s:CheckUndo(l:md)
-            undojoin | call s:SchleppBlock(a:d)
+            undojoin | call s:SchleppBlock(a:dir)
         else
-            call s:SchleppBlock(a:d)
+            call s:SchleppBlock(a:dir)
         endif
     endif
 endfunction "}}}
 "{{{ SchleppLines
-function! s:SchleppLines(dir, fline, lline)
+function! s:SchleppLines(dir)
 "  Logic for moving text selected with visual line mode
-"  TODO:
-"       Up/Down should work on the entire set of lines together
-"       Left/Right should be done per line (left boundry checks)
-"       Get working as a range function
-"
+
     "build normal command string to reselect the VisualLine area
-    let l:numlines = (a:lline - a:fline)
+    let l:fline = getpos("'<")[1]
+    let l:lline = getpos("'>")[1]
+    let l:numlines = l:lline - l:fline
+    "Because s:ResetSelection() will not work in some cases, we need to reselect
+    "manually
     let l:reselect  = "V" . (l:numlines ? l:numlines . "j" : "")
 
     if (a:dir ==? "up" || a:dir ==? "k") "{{{ Up
-        if a:fline == 1 "First lines of file, move everything else down
-            call append(a:lline, "")
+        if l:fline == 1 "First lines of file, move everything else down
+            call append(l:lline, "")
             call s:ResetSelection()
         else
-            execute "normal! gvdkP" . l:reselect
+            execute "normal! gvdkP" . l:reselect . "o"
         endif "}}}
     elseif (a:dir ==? "down" || a:dir ==? "j") "{{{ Down
-        if a:lline == line("$") "Moving down past EOF
-            call append(a:fline - 1, "")
+        if l:lline == line("$") "Moving down past EOF
+            call append(l:fline - 1, "")
             call s:ResetSelection()
         else
             execute "normal! gvdp" . l:reselect
         endif "}}}
     elseif (a:dir ==? "right" || a:dir ==? "l") "{{{ Right
-        for l:linenum in range(a:fline, a:lline)
+        for l:linenum in range(l:fline, l:lline)
             let l:line = getline(l:linenum)
             "Only insert space if the line is not empty
             if match(l:line, "^$") == -1
@@ -109,14 +112,14 @@ function! s:SchleppLines(dir, fline, lline)
     elseif (a:dir ==? "left" || a:dir ==? "h") "{{{ Left
         "Why doesn't \s work in the match or substitute?
         if !exists("g:Schlepp#AllowSquishing") "Squish the lines left
-            let l:lines = getline(a:fline, a:lline)
+            let l:lines = getline(l:fline, l:lline)
             if !(match(l:lines, '^[^ \t]') == -1)
                 call s:ResetSelection()
                 return
             endif
         endif
 
-        for l:linenum in range(a:fline, a:lline)
+        for l:linenum in range(l:fline, l:lline)
             call setline(l:linenum, substitute(getline(l:linenum), "^[ \t]", "", ""))
         endfor
 
