@@ -66,7 +66,7 @@ let g:Schlepp#DupLinesDir = "down"
 let g:Schlepp#DupBlockDir = "right"
 ```
 
-To disable trailing whitespace removal on block duplication
+To enable trailing whitespace removal on block duplication
 ```vimscript
-let g:Schlepp#DupTrimWS = 0
+let g:Schlepp#DupTrimWS = 1
 ```
