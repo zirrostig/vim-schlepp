@@ -52,13 +52,14 @@ let g:Schlepp#AllowSquishing = 0
 let g:Schlepp#TrimWS = 1
 let g:Schlepp#Reindent = 0
 "}}}
-"{{{ s:Schlepp(dir, ...)
+"{{{ s:Schlepp(dir, ...) range
 function! s:Schlepp(dir, ...) range
 "  The main function that acts as an entrant function to be called by the user
 "  with a desired direction to move the seleceted text.
 "  TODO:
 "       Work with a count specifier eg. [count]<Up> moves lines count times
-"       Maybe: Make work with a motion
+"       Maybe: Make word with a motion
+
     "Get what visual mode was being used
     normal gv
     let l:md = mode()
@@ -144,7 +145,6 @@ function! s:SchleppLines(dir, reindent)
 
         call s:ResetSelection()
     endif "}}}
-
 endfunction "}}}
 "{{{ s:SchleppBlock(dir)
 function! s:SchleppBlock(dir)
@@ -218,6 +218,7 @@ function! s:SchleppBlock(dir)
     endtry
     let &l:virtualedit = l:ve_save
 
+
 endfunction "}}}
 "{{{ s:SchleppToggleReindent()
 function! s:SchleppToggleReindent()
@@ -246,7 +247,7 @@ noremap <SID>SchleppDupDown  :call <SID>SchleppDup("Down")<CR>
 noremap <SID>SchleppDupLeft  :call <SID>SchleppDup("Left")<CR>
 noremap <SID>SchleppDupRight :call <SID>SchleppDup("Right")<CR>
 "}}}
-"{{{ s:SchleppDup(...)
+"{{{ s:SchleppDup(...) range
 function! s:SchleppDup(...) range
 " Duplicates the selected lines/block of text
 
@@ -310,7 +311,7 @@ function! s:SchleppDupBlock(dir)
         setlocal virtualedit=all
         let [l:fbuf, l:fline, l:fcol, l:foff] = getpos("'<")
         let [l:lbuf, l:lline, l:lcol, l:loff] = getpos("'>")
-        let [l:left_col, l:right_col]  = sort([l:fcol + l:foff, l:lcol + l:loff])
+        let [l:left_col, l:right_col]  = sort([l:fcol + l:foff, l:lcol + l:loff], "s:NrCmp")
         let l:numlines = (l:lline - l:fline) + 1
         let l:numcols = (l:right_col - l:left_col)
 
@@ -323,7 +324,10 @@ function! s:SchleppDupBlock(dir)
                 "Position of selection has changed
                 let [l:fbuf, l:fline, l:fcol, l:foff] = getpos("'<")
             endif
-            execute "normal! gvy:call cursor(" . join([l:fline - l:numlines, 1, l:left_col - 1], ",") . ")\<CR>Pgv"
+
+            let l:set_cursor = ":call cursor(getpos(\"'<\")[1:3])\<CR>" . l:numlines . "k"
+            execute "normal! gvy" . l:set_cursor . "Pgv"
+
         elseif a:dir ==? "down"
             if l:lline + l:numlines >= line('$')
                 for i in range((l:lline + l:numlines) - line('$'))
@@ -372,9 +376,11 @@ function! s:CheckUndo(md)
 
     let b:SchleppLastNr = changenr()
     let b:SchleppLastMd = a:md
-    return 0
 endfunction
 
+function! s:NrCmp(i1, i2)
+    return a:i1 - a:i2
+endfunction
 "}}}
 
 " vim: ts=4 sw=4 et fdm=marker
