@@ -36,13 +36,24 @@ noremap <SID>SchleppUp    :call <SID>Schlepp("Up")<CR>
 noremap <SID>SchleppDown  :call <SID>Schlepp("Down")<CR>
 noremap <SID>SchleppLeft  :call <SID>Schlepp("Left")<CR>
 noremap <SID>SchleppRight :call <SID>Schlepp("Right")<CR>
+
+"Reindent Mappings
+"These are only done on VisualLine Mode
+noremap <unique> <script> <Plug>SchleppIndentUp       <SID>SchleppIndentUp
+noremap <unique> <script> <Plug>SchleppIndentDown     <SID>SchleppIndentDown
+noremap <unique> <script> <Plug>SchleppToggleReindent <SID>SchleppToggleReindent
+
+noremap <SID>SchleppIndentUp       :call <SID>Schlepp("Up", 1)<CR>
+noremap <SID>SchleppIndentDown     :call <SID>Schlepp("Down", 1)<CR>
+noremap <SID>SchleppToggleReindent :call <SID>SchleppToggleReindent()<CR>
 "}}}
 "{{{ Globals
 let g:Schlepp#AllowSquishing = 0
 let g:Schlepp#TrimWS = 1
+let g:Schlepp#Reindent = 0
 "}}}
 "{{{ s:Schlepp(dir)
-function! s:Schlepp(dir) range
+function! s:Schlepp(dir, ...) range
 "  The main function that acts as an entrant function to be called by the user
 "  with a desired direction to move the seleceted text.
 "  TODO:
@@ -63,10 +74,17 @@ function! s:Schlepp(dir) range
 
     "Branch off into specilized functions for each mode, check for undojoin
     if l:md ==# "V"
-        if s:CheckUndo(l:md)
-            undojoin | call s:SchleppLines(a:dir)
+        "Reindent if necessary
+        if a:0 >= 1
+            let l:reindent = a:1
         else
-            call s:SchleppLines(a:dir)
+            let l:reindent = g:Schlepp#Reindent
+        endif
+
+        if s:CheckUndo(l:md)
+            undojoin | call s:SchleppLines(a:dir, l:reindent)
+        else
+            call s:SchleppLines(a:dir, l:reindent)
         endif
     elseif l:md ==# ""
         if s:CheckUndo(l:md)
@@ -77,7 +95,7 @@ function! s:Schlepp(dir) range
     endif
 endfunction "}}}
 "{{{ s:SchleppLines(dir)
-function! s:SchleppLines(dir)
+function! s:SchleppLines(dir, reindent)
 "  Logic for moving text selected with visual line mode
 
     "build normal command string to reselect the VisualLine area
@@ -87,20 +105,21 @@ function! s:SchleppLines(dir)
     "Because s:ResetSelection() will not work in some cases, we need to reselect
     "manually
     let l:reselect  = "V" . (l:numlines ? l:numlines . "j" : "")
+    let l:reindent_cmd = (a:reindent ? "=gv" : "")
 
     if a:dir ==? "up" "{{{ Up
         if l:fline == 1 "First lines of file, move everything else down
             call append(l:lline, "")
             call s:ResetSelection()
         else
-            execute "normal! gvdkP" . l:reselect . "o"
+            execute "normal! gvdkP" . l:reselect . "o" . l:reindent_cmd
         endif "}}}
     elseif a:dir ==? "down" "{{{ Down
         if l:lline == line("$") "Moving down past EOF
             call append(l:fline - 1, "")
             call s:ResetSelection()
         else
-            execute "normal! gvdp" . l:reselect
+            execute "normal! gvdp" . l:reselect . l:reindent_cmd
         endif "}}}
     elseif a:dir ==? "right" "{{{ Right
         for l:linenum in range(l:fline, l:lline)
@@ -200,6 +219,15 @@ function! s:SchleppBlock(dir)
     let &l:virtualedit = l:ve_save
 
 
+endfunction "}}}
+"{{{ s:SchleppToggleReindent()
+function! s:SchleppToggleReindent()
+    if g:Schlepp#Reindent == 0
+        let g:Schlepp#Reindent = 1
+    else
+        let g:Schlepp#Reindent = 0
+    endif
+    call s:ResetSelection()
 endfunction "}}}
 "}}}
 "{{{ Schlepp Duplication
@@ -347,6 +375,7 @@ function! s:CheckUndo(md)
     let b:SchleppLastMd = a:md
     return 0
 endfunction
+
 "}}}
 
 " vim: ts=4 sw=4 et fdm=marker
