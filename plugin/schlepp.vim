@@ -37,6 +37,10 @@ noremap <SID>SchleppDown  :call <SID>Schlepp("Down")<CR>
 noremap <SID>SchleppLeft  :call <SID>Schlepp("Left")<CR>
 noremap <SID>SchleppRight :call <SID>Schlepp("Right")<CR>
 "}}}
+"{{{ Globals
+let g:Schlepp#AllowSquishing = 0
+let g:Schlepp#TrimWS = 1
+"}}}
 "{{{ s:Schlepp(dir)
 function! s:Schlepp(dir) range
 "  The main function that acts as an entrant function to be called by the user
@@ -108,8 +112,7 @@ function! s:SchleppLines(dir)
         endfor
         call s:ResetSelection() "}}}
     elseif a:dir ==? "left" "{{{ Left
-        "Why doesn't \s work in the match or substitute?
-        if !exists("g:Schlepp#AllowSquishing") && g:Schlepp#AllowSquishing != 0 "Squish the lines left
+        if g:Schlepp#AllowSquishing != 0 "Squish the lines left
             let l:lines = getline(l:fline, l:lline)
             if !(match(l:lines, '^[^ \t]') == -1)
                 call s:ResetSelection()
@@ -118,7 +121,7 @@ function! s:SchleppLines(dir)
         endif
 
         for l:linenum in range(l:fline, l:lline)
-            call setline(l:linenum, substitute(getline(l:linenum), "^[ \t]", "", ""))
+            call setline(l:linenum, substitute(getline(l:linenum), "^\\s", "", ""))
         endfor
 
         call s:ResetSelection()
@@ -161,9 +164,9 @@ function! s:SchleppBlock(dir)
             "}}}
         elseif a:dir ==? "left" "{{{ Left
             if l:left_col == 1
-                if exists("g:Schlepp#AllowSquishing") && g:Schlepp#AllowSquishing != 0
+                if g:Schlepp#AllowSquishing != 0
                     for l:linenum in range(l:fline, l:lline)
-                        call setline(l:linenum, substitute(getline(l:linenum), "^[ \t]", "", ""))
+                        call setline(l:linenum, substitute(getline(l:linenum), "^\\s", "", ""))
                     endfor
                 endif
                 call s:ResetSelection()
@@ -173,14 +176,37 @@ function! s:SchleppBlock(dir)
             "}}}
         endif
 
+        "Strip Whitespace
+        "Need new positions since the visual area has moved
+        if g:Schlepp#TrimWS != 0
+            let [l:fbuf, l:fline, l:fcol, l:foff] = getpos("'<")
+            let [l:lbuf, l:lline, l:lcol, l:loff] = getpos("'>")
+            let [l:left_col, l:right_col]  = sort([l:fcol + l:foff, l:lcol + l:loff])
+            for l:linenum in range(l:fline, l:lline)
+                if l:right_col == len(getline(l:linenum))
+                    call setline(l:linenum, substitute(getline(l:linenum), "\\s\\+$", "", ""))
+                endif
+            endfor
+            "Take care of trailing space created on lines above or below while
+            "moving past them
+            if a:dir ==? "up"
+                call setline(l:lline + 1, substitute(getline(l:lline + 1), "\\s\\+$", "", ""))
+            elseif a:dir ==? "down"
+                call setline(l:fline - 1, substitute(getline(l:fline - 1), "\\s\\+$", "", ""))
+            endif
+        endif
+
     endtry
     let &l:virtualedit = l:ve_save
+
+
 endfunction "}}}
 "}}}
 "{{{ Schlepp Duplication
 "{{{ Globals
 let g:Schlepp#DupLinesDir = "down"
 let g:Schlepp#DupBlockDir = "right"
+let g:Schlepp#DupTrimWS = 0
 ""}}}
 "{{{ Mappings
 noremap <unique> <script> <Plug>SchleppDupUp <SID>SchleppDupUp
@@ -285,6 +311,19 @@ function! s:SchleppDupBlock(dir)
         else
             call s:ResetSelection()
         endif
+
+        "Strip Whitespace
+        "Need new positions since the visual area has moved
+        if g:Schlepp#DupTrimWS != 0
+            let [l:fbuf, l:fline, l:fcol, l:foff] = getpos("'<")
+            let [l:lbuf, l:lline, l:lcol, l:loff] = getpos("'>")
+            let [l:left_col, l:right_col]  = sort([l:fcol + l:foff, l:lcol + l:loff])
+            for l:linenum in range(l:fline, l:lline)
+                if l:right_col == len(getline(l:linenum))
+                    call setline(l:linenum, substitute(getline(l:linenum), "\\s\\+$", "", ""))
+                endif
+            endfor
+        endif
     endtry
     let &l:virtualedit = l:ve_save
 
@@ -310,4 +349,4 @@ function! s:CheckUndo(md)
 endfunction
 "}}}
 
-" vim: ts=4 sw=4 et fdm=marker tw=80 fo+=t
+" vim: ts=4 sw=4 et fdm=marker

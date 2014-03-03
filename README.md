@@ -39,6 +39,11 @@ To allow the 'Squishing' of text add this line to your vimrc
 let g:Schlepp#AllowSquishing = 1
 ```
 
+To disable trailing whitespace removal on block move
+```vimscript
+let g:Schlepp#TrimWS = 0
+```
+
 Duplication
 -----------
 Some suggested mappings
@@ -59,4 +64,9 @@ or set the default direction for SchleppDup
 ```vimscript
 let g:Schlepp#DupLinesDir = "down"
 let g:Schlepp#DupBlockDir = "right"
+```
+
+To disable trailing whitespace removal on block duplication
+```vimscript
+let g:Schlepp#DupTrimWS = 0
 ```
