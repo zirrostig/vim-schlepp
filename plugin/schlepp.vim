@@ -164,14 +164,10 @@ function! s:SchleppBlock(dir)
             "}}}
         elseif (a:dir ==? "left" || a:dir ==? "h") "{{{ Left
             if l:left_col == 1
-                for l:linenum in range(l:fline, l:lline)
-                    "TODO:
-                    "   Make this detect and use tabs (if user uses tabs) as space gets large
-                    call setline(l:linenum, " ".getline(l:linenum))
-                endfor
-                execute "normal! gvlolo\<Esc>"
+                call s:ResetSelection()
+            else
+                normal! gvxhPgvhoho
             endif
-            normal! gvxhPgvhoho
             "}}}
         endif
 
