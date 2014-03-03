@@ -56,9 +56,6 @@ function! s:Schlepp(dir) range
         call s:ResetSelection()
     endif
 
-    echom l:md
-
-
     "Branch off into specilized functions for each mode, check for undojoin
     if l:md ==# "V"
         if s:CheckUndo(l:md)
@@ -131,43 +128,55 @@ function! s:SchleppBlock(dir)
 "  Logic for moving a visual block selection, this is much more complicated than
 "  lines since I have to be able to part text in order to insert the incoming
 "  line
+"  TODO:
+"       Get whitespace striping inplace
 
     "Save virtualedit settings, and enable for the function
-    let l:ve_save = &virtualedit
+    let l:ve_save = &l:virtualedit
     "So that if something fails, we can set virtualedit back
-    " try
-    set virtualedit=all
+    try
+        setlocal virtualedit=all
 
-    " While '< is always above or equal to '> in linenum, the column it
-    " references could be the first or last col in the block selected
-    let [l:fbuf, l:fline, l:fcol, l:foff] = getpos("'<")
-    let [l:lbuf, l:lline, l:lcol, l:loff] = getpos("'>")
-    " let l:numlines = l:lline - l:fline
-    " let [l:left_col, l:right_col]  = sort([l:fcol + l:foff, l:lcol + l:loff])
-    " let l:numcols = l:right_col - l:left_col
-    " let l:reselect = "\<C-v>" . (l:numlines ? l:numlines . "j" : "") .
-    "             \ (l:numcols ? l:numcols . "l" : "")
+        " While '< is always above or equal to '> in linenum, the column it
+        " references could be the first or last col in the block selected
+        let [l:fbuf, l:fline, l:fcol, l:foff] = getpos("'<")
+        let [l:lbuf, l:lline, l:lcol, l:loff] = getpos("'>")
+        let [l:left_col, l:right_col]  = sort([l:fcol + l:foff, l:lcol + l:loff])
+        " let l:numlines = l:lline - l:fline
+        " let l:numcols = l:right_col - l:left_col
+        " let l:reselect = "\<C-v>" . (l:numlines ? l:numlines . "j" : "") .
+        "             \ (l:numcols ? l:numcols . "l" : "")
 
-    if (a:dir ==? "up" || a:dir ==? "k") "{{{ Up
-        if l:fline == 1 "First lines of file
-            call append(0, "")
+        if (a:dir ==? "up" || a:dir ==? "k") "{{{ Up
+            if l:fline == 1 "First lines of file
+                call append(0, "")
+            endif
+            normal! gvxkPgvkoko
+            "}}}
+        elseif (a:dir ==? "down" || a:dir ==? "j") "{{{ Down
+            if l:lline == line("$") "Moving down past EOF
+                call append(line("$"), "")
+            endif
+            normal! gvxjPgvjojo
+            "}}}
+        elseif (a:dir ==? "right" || a:dir ==? "l") "{{{ Right
+            normal! gvxpgvlolo
+            "}}}
+        elseif (a:dir ==? "left" || a:dir ==? "h") "{{{ Left
+            if l:left_col == 1
+                for l:linenum in range(l:fline, l:lline)
+                    "TODO:
+                    "   Make this detect and use tabs (if user uses tabs) as space gets large
+                    call setline(l:linenum, " ".getline(l:linenum))
+                endfor
+                execute "normal! gvlolo\<Esc>"
+            endif
+            normal! gvxhPgvhoho
+            "}}}
         endif
-        execute "normal! gvxkPgvkoko"
-        "}}}
-    elseif (a:dir ==? "down" || a:dir ==? "j") "{{{ Down
-        if l:lline == line("$") "Moving down past EOF
-            call append(line("$"), "")
-        endif
-        execute "normal! gvxjPgvjojo"
-        "}}}
-    elseif (a:dir ==? "right" || a:dir ==? "l") "{{{ Right
-        "}}}
-    elseif (a:dir ==? "left" || a:dir ==? "h") "{{{ Left
-        "}}}
-    endif
 
-    " endtry
-    let &virtualedit = l:ve_save
+    endtry
+    let &l:virtualedit = l:ve_save
 endfunction "}}}
 "{{{ Utility Functions
 function! s:ResetSelection()
