@@ -142,10 +142,6 @@ function! s:SchleppBlock(dir)
         let [l:fbuf, l:fline, l:fcol, l:foff] = getpos("'<")
         let [l:lbuf, l:lline, l:lcol, l:loff] = getpos("'>")
         let [l:left_col, l:right_col]  = sort([l:fcol + l:foff, l:lcol + l:loff])
-        " let l:numlines = l:lline - l:fline
-        " let l:numcols = l:right_col - l:left_col
-        " let l:reselect = "\<C-v>" . (l:numlines ? l:numlines . "j" : "") .
-        "             \ (l:numcols ? l:numcols . "l" : "")
 
         if (a:dir ==? "up" || a:dir ==? "k") "{{{ Up
             if l:fline == 1 "First lines of file
@@ -164,6 +160,11 @@ function! s:SchleppBlock(dir)
             "}}}
         elseif (a:dir ==? "left" || a:dir ==? "h") "{{{ Left
             if l:left_col == 1
+                if exists("g:Schlepp#AllowSquishing")
+                    for l:linenum in range(l:fline, l:lline)
+                        call setline(l:linenum, substitute(getline(l:linenum), "^[ \t]", "", ""))
+                    endfor
+                endif
                 call s:ResetSelection()
             else
                 normal! gvxhPgvhoho

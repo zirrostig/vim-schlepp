@@ -9,8 +9,7 @@ What it Does
 Schlepp lets you move a highlighted (visual mode) section of text around,
 respecting other text around it.
 
-Right now it only supports Visual-Line mode, but Visual-Block mode will be added
-soon.
+Block and Line Selections work now.
 
 Setup
 =====
