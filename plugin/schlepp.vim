@@ -52,14 +52,13 @@ let g:Schlepp#AllowSquishing = 0
 let g:Schlepp#TrimWS = 1
 let g:Schlepp#Reindent = 0
 "}}}
-"{{{ s:Schlepp(dir)
+"{{{ s:Schlepp(dir, ...)
 function! s:Schlepp(dir, ...) range
 "  The main function that acts as an entrant function to be called by the user
 "  with a desired direction to move the seleceted text.
 "  TODO:
 "       Work with a count specifier eg. [count]<Up> moves lines count times
-"       Maybe: Make word with a motion
-"
+"       Maybe: Make work with a motion
     "Get what visual mode was being used
     normal gv
     let l:md = mode()
@@ -94,7 +93,7 @@ function! s:Schlepp(dir, ...) range
         endif
     endif
 endfunction "}}}
-"{{{ s:SchleppLines(dir)
+"{{{ s:SchleppLines(dir, reindent)
 function! s:SchleppLines(dir, reindent)
 "  Logic for moving text selected with visual line mode
 
@@ -145,6 +144,7 @@ function! s:SchleppLines(dir, reindent)
 
         call s:ResetSelection()
     endif "}}}
+
 endfunction "}}}
 "{{{ s:SchleppBlock(dir)
 function! s:SchleppBlock(dir)
@@ -217,7 +217,6 @@ function! s:SchleppBlock(dir)
 
     endtry
     let &l:virtualedit = l:ve_save
-
 
 endfunction "}}}
 "{{{ s:SchleppToggleReindent()
