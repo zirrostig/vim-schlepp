@@ -25,7 +25,13 @@ if exists("g:Schlepp#Loaded")
 endif
 let g:Schlepp#Loaded = 1
 
-"{{{ Schlepp Movement
+"{{{ Globals
+let g:Schlepp = {}
+let g:Schlepp.allowSquishing = 0
+let g:Schlepp.trimWS = 1
+let g:Schlepp.reindent = 0
+let g:Schlepp.expandFolds = 0
+"}}}
 "{{{  Mappings
 noremap <unique> <script> <Plug>SchleppUp <SID>SchleppUp
 noremap <unique> <script> <Plug>SchleppDown <SID>SchleppDown
@@ -47,11 +53,7 @@ noremap <SID>SchleppIndentUp       :call <SID>Schlepp("Up", 1)<CR>
 noremap <SID>SchleppIndentDown     :call <SID>Schlepp("Down", 1)<CR>
 noremap <SID>SchleppToggleReindent :call <SID>SchleppToggleReindent()<CR>
 "}}}
-"{{{ Globals
-let g:Schlepp#AllowSquishing = 0
-let g:Schlepp#TrimWS = 1
-let g:Schlepp#Reindent = 0
-"}}}
+"{{{ Schlepp Movement
 "{{{ s:Schlepp(dir, ...) range
 function! s:Schlepp(dir, ...) range
 "  The main function that acts as an entrant function to be called by the user
@@ -78,7 +80,7 @@ function! s:Schlepp(dir, ...) range
         if a:0 >= 1
             let l:reindent = a:1
         else
-            let l:reindent = g:Schlepp#Reindent
+            let l:reindent = g:Schlepp.reindent
         endif
 
         if s:CheckUndo(l:md)
@@ -131,7 +133,7 @@ function! s:SchleppLines(dir, reindent)
         endfor
         call s:ResetSelection() "}}}
     elseif a:dir ==? "left" "{{{ Left
-        if g:Schlepp#AllowSquishing != 0 "Squish the lines left
+        if g:Schlepp.allowSquishing != 0 "Squish the lines left
             let l:lines = getline(l:fline, l:lline)
             if !(match(l:lines, '^[^ \t]') == -1)
                 call s:ResetSelection()
@@ -183,7 +185,7 @@ function! s:SchleppBlock(dir)
             "}}}
         elseif a:dir ==? "left" "{{{ Left
             if l:left_col == 1
-                if g:Schlepp#AllowSquishing != 0
+                if g:Schlepp.allowSquishing != 0
                     for l:linenum in range(l:fline, l:lline)
                         call setline(l:linenum, substitute(getline(l:linenum), "^\\s", "", ""))
                     endfor
@@ -197,7 +199,7 @@ function! s:SchleppBlock(dir)
 
         "Strip Whitespace
         "Need new positions since the visual area has moved
-        if g:Schlepp#TrimWS != 0
+        if g:Schlepp.trimWS != 0
             let [l:fbuf, l:fline, l:fcol, l:foff] = getpos("'<")
             let [l:lbuf, l:lline, l:lcol, l:loff] = getpos("'>")
             let [l:left_col, l:right_col]  = sort([l:fcol + l:foff, l:lcol + l:loff])
@@ -222,19 +224,19 @@ function! s:SchleppBlock(dir)
 endfunction "}}}
 "{{{ s:SchleppToggleReindent()
 function! s:SchleppToggleReindent()
-    if g:Schlepp#Reindent == 0
-        let g:Schlepp#Reindent = 1
+    if g:Schlepp.reindent == 0
+        let g:Schlepp.reindent = 1
     else
-        let g:Schlepp#Reindent = 0
+        let g:Schlepp.reindent = 0
     endif
     call s:ResetSelection()
 endfunction "}}}
 "}}}
 "{{{ Schlepp Duplication
 "{{{ Globals
-let g:Schlepp#DupLinesDir = "down"
-let g:Schlepp#DupBlockDir = "right"
-let g:Schlepp#DupTrimWS = 0
+let g:Schlepp.dupLinesDir = "down"
+let g:Schlepp.dupBlockDir = "right"
+let g:Schlepp.dupTrimWS = 0
 ""}}}
 "{{{ Mappings
 noremap <unique> <script> <Plug>SchleppDupUp <SID>SchleppDupUp
@@ -269,7 +271,7 @@ function! s:SchleppDup(...) range
         if a:0 >= 1
             let l:dir = a:1
         else
-            let l:dir = g:Schlepp#DupLinesDir
+            let l:dir = g:Schlepp.dupLinesDir
         endif
 
         if l:dir ==? "up" || l:dir ==? "down"
@@ -283,7 +285,7 @@ function! s:SchleppDup(...) range
         if a:0 >= 1
             let l:dir = a:1
         else
-            let l:dir = g:Schlepp#DupBlockDir
+            let l:dir = g:Schlepp.dupBlockDir
         endif
 
         call s:SchleppDupBlock(l:dir)
@@ -345,7 +347,7 @@ function! s:SchleppDupBlock(dir)
 
         "Strip Whitespace
         "Need new positions since the visual area has moved
-        if g:Schlepp#DupTrimWS != 0
+        if g:Schlepp.dupTrimWS != 0
             let [l:fbuf, l:fline, l:fcol, l:foff] = getpos("'<")
             let [l:lbuf, l:lline, l:lcol, l:loff] = getpos("'>")
             let [l:left_col, l:right_col]  = sort([l:fcol + l:foff, l:lcol + l:loff])

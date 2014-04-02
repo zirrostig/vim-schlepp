@@ -36,18 +36,18 @@ All the way left text cannot be moved left
 ```
 To allow the 'Squishing' of text add this line to your vimrc
 ```vimscript
-let g:Schlepp#AllowSquishing = 1
+let g:Schlepp.allowSquishing = 1
 ```
 
 To disable trailing whitespace removal on block move
 ```vimscript
-let g:Schlepp#TrimWS = 0
+let g:Schlepp.trimWS = 0
 ```
 
 Schlepp can also reindent as it moves. Any of these work
 * SchleppUp with reindentation is SchleppIndentUp
 * SchleppDown with reindentation is SchleppIndentDown
-* let g:Schlepp#Reindent = 1
+* let g:Schlepp.reindent = 1
 * map to the toggle function (below) - This is how I like to use it
 ```vimscript
 vmap <unique> i <Plug>SchleppToggleReindent
@@ -71,13 +71,13 @@ or set the default direction for SchleppDup
 * DupBlock can be "up", "down", "left", or "right"
 * shown below are the defaults
 ```vimscript
-let g:Schlepp#DupLinesDir = "down"
-let g:Schlepp#DupBlockDir = "right"
+let g:Schlepp.dupLinesDir = "down"
+let g:Schlepp.dupBlockDir = "right"
 ```
 
 To enable trailing whitespace removal on block duplication
 ```vimscript
-let g:Schlepp#DupTrimWS = 1
+let g:Schlepp.dupTrimWS = 1
 ```
 
 Known Issues
