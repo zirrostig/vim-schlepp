@@ -82,8 +82,5 @@ let g:Schlepp.dupTrimWS = 1
 
 Known Issues
 ============
-* Schlepping over folded text causes the fold to become part of the selection
-  and cause massive issues. - Working on, for now do not Schlepp over folds
-* ToggleReindent sometimes causes the full selection to be lost, I'm not sure
-  what is causing this
+* See GitHub Issue Tracker
 * This README is lacking in cool useful gifs of Schlepp in action. - Someday
