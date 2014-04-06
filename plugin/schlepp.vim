@@ -103,10 +103,6 @@ function! s:SchleppLines(dir, reindent)
     "build normal command string to reselect the VisualLine area
     let l:fline = line("'<")
     let l:lline = line("'>")
-    let l:numlines = l:lline - l:fline
-    "Because s:ResetSelection() will not work in some cases, we need to reselect
-    "manually
-    let l:reselect  = "V" . (l:numlines ? l:numlines . "j" : "")
     let l:reindent_cmd = (a:reindent ? "=gv" : "")
 
     if a:dir ==? "up" "{{{ Up
@@ -114,14 +110,14 @@ function! s:SchleppLines(dir, reindent)
             call append(l:lline, "")
             call s:ResetSelection()
         else
-            execute "normal! gvdkP" . l:reselect . "o" . l:reindent_cmd
+            execute "normal! :'<,'>m'<-2\<CR>" . l:reindent_cmd . "gv"
         endif "}}}
     elseif a:dir ==? "down" "{{{ Down
         if l:lline == line("$") "Moving down past EOF
             call append(l:fline - 1, "")
             call s:ResetSelection()
         else
-            execute "normal! gvdp" . l:reselect . l:reindent_cmd
+            execute "normal! :'<,'>m'>+1\<CR>" . l:reindent_cmd . "gv"
         endif "}}}
     elseif a:dir ==? "right" "{{{ Right
         for l:linenum in range(l:fline, l:lline)
@@ -278,7 +274,7 @@ function! s:SchleppDup(...) range
             call s:SchleppDupLines(l:dir)
         else
             call s:ResetSelection()
-            echoerr "Left and Right duplication not supported for lines"
+            echom "Left and Right duplication not supported for lines"
         endif
     elseif l:md ==# ""
         "Get direction
@@ -363,26 +359,35 @@ function! s:SchleppDupBlock(dir)
 endfunction "}}}
 "}}}
 "{{{ Utility Functions
-function! s:ResetSelection()
-    execute "normal \<Esc>gv"
-endfunction
-
+"{{{ s:CheckUndo(md)
 function! s:CheckUndo(md)
-    if !exists("b:SchleppLast")
-        let b:SchleppLast = {}
+    if !exists("b:schleppState")
+        let b:schleppState = {}
+        let b:schleppState.lastNr = changenr()
+        let b:schleppState.lastMd = a:md
+        return 0
     endif
 
-    if exists("b:SchleppLastNr") && b:SchleppLastNr == changenr() - 1 && b:SchleppLastMd == a:md
+    if b:schleppState.lastNr == changenr() - 1 &&  b:schleppState.lastMd == a:md
         return 1
     endif
 
+    "else
     let b:SchleppLastNr = changenr()
     let b:SchleppLastMd = a:md
+    return 0
 endfunction
-
+"}}}
+"{{{ s:ResetSelection()
+function! s:ResetSelection()
+    execute "normal \<Esc>gv"
+endfunction
+"}}}
+"{{{ s:NrCmp(i1, i2)
 function! s:NrCmp(i1, i2)
     return a:i1 - a:i2
 endfunction
+"}}}
 "}}}
 
 " vim: ts=4 sw=4 et fdm=marker
