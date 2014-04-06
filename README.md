@@ -13,6 +13,11 @@ Block and Line Selections work now.
 
 Schlepp also lets you duplicate selections of text
 
+Additionally run for more info
+```
+:help schlepp 
+```
+
 Setup
 =====
 

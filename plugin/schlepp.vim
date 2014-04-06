@@ -25,12 +25,13 @@ if exists("g:Schlepp#Loaded")
 endif
 let g:Schlepp#Loaded = 1
 
+"{{{ Schlepp Movement
 "{{{ Globals
 let g:Schlepp = {}
 let g:Schlepp.allowSquishing = 0
 let g:Schlepp.trimWS = 1
 let g:Schlepp.reindent = 0
-let g:Schlepp.expandFolds = 0
+let g:Schlepp.moveIntoFolds = 0
 "}}}
 "{{{  Mappings
 noremap <unique> <script> <Plug>SchleppUp <SID>SchleppUp
@@ -53,7 +54,6 @@ noremap <SID>SchleppIndentUp       :call <SID>Schlepp("Up", 1)<CR>
 noremap <SID>SchleppIndentDown     :call <SID>Schlepp("Down", 1)<CR>
 noremap <SID>SchleppToggleReindent :call <SID>SchleppToggleReindent()<CR>
 "}}}
-"{{{ Schlepp Movement
 "{{{ s:Schlepp(dir, ...) range
 function! s:Schlepp(dir, ...) range
 "  The main function that acts as an entrant function to be called by the user

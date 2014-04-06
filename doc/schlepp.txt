@@ -1,0 +1,153 @@
+*schlepp.txt*       For Vim version 7.4.    Last change: 2014 April 3
+
+Author: Zachary Stigall
+License: VIM
+
+Move and duplicate selected text. Does nothing unless keys are bound to the
+various commands.
+
+Moving text around                                  *schlepp*
+
+1. Schlepp Movement                 |schlepp-movement|
+2. Schlepp Duplication              |schlepp-duplication|
+3. Schlepp Options                  |schlepp-configuring|
+
+==============================================================================
+SCHLEPP MOVEMENT                                    *schlepp-movement*
+
+These are intended to be the most frequently used commands. They work in
+|linewise-visual| and |blockwise-visual| modes. Regular visual mode is not
+supported at the moment, but may be supported in the future. Once text is
+selected, you can freely move it around your file, and text will reflow around
+the selection being moved, based on the |visual-mode| being used.
+
+In |blockwise-visual| mode, |schlepp| will automatically remove trailing
+whitespace from selections, due to its use of 'virtualedit' settings adding lots
+of whitespace in many cases, it tries to clean up after itself, but may
+inadvertently remove intentional whitespace. See |schlepp-trim-ws| to change the
+default.
+
+Command               Action ~
+<Plug>*SchleppUp*       Moves selected text up 1 line.
+<Plug>*SchleppDown*     Moves selected text down 1 line.
+<Plug>*SchleppLeft*     Moves selected text to the left 1 char. By default will
+                      not allow text to be "squished" to the left upon hitting
+                      the left most column. See |schlepp-squishing|.
+
+<Plug>*SchleppRight*    Moves selected text to the right 1 char.
+
+The recommended mappings are. >
+    vmap <unique> <up>    <Plug>SchleppUp
+    vmap <unique> <down>  <Plug>SchleppDown
+    vmap <unique> <left>  <Plug>SchleppLeft
+    vmap <unique> <right> <Plug>SchleppRight
+<
+
+                                                    *schlepp-reindent*
+Additionally when moving text |schlepp| can automatically use vim's reindent
+command as text is moved, making moving code around really easy (assuming your
+indentation style matches vim's).
+Note: This only works in |linewise-visual| mode.
+
+Command                             Action ~
+<Plug>*SchleppToggleReindent*         Used to toggle reindentation mode on and
+                                    off. Default off. See |schlepp-toggle-reindent|
+<Plug>*SchleppIndentUp*               Moves selection up, and reindents.
+<Plug>*SchleppIndentDown*             Moves selection down, and reindents.
+
+I like to map just the toggle function. >
+    vmap <unique> i <Plug>SchleppToggleReindent
+<
+
+Some behaviors when moving text can be changed with a couple settings.
+|schlepp-options|
+
+==============================================================================
+SCHLEPP DUPLICATION                                 *schlepp-duplication*
+
+While text is selected, it can be duplicated in one of a couple directions.
+|linewise-visual| lets you duplicate above or below the selected text, and
+|blockwise-visual| allows any of the four directions. By default |schlepp| will
+strip any trailing whitespace from the newly placed text.
+
+Command                 Action ~
+<Plug>*SchleppDup*        Duplicates the selected text in the default direction,
+                        below for |linewise-visual| and to the right for
+                        |blockwise-visual|. The defaults can be changed,
+                        |schlepp-options|
+
+<Plug>*SchleppDupUp*      Duplicates the selected text and places it above the
+                        current selection.
+
+<Plug>*SchleppDupDown*    Duplicates the selected text and places it below the
+                        current selection. This is the |linewise-visual|
+                        default. See |schlepp-dup-lines| to change default.
+
+<Plug>*SchleppDupLeft*    Duplicates the selected text and places it to the left
+                        of the current selection. Only works in
+                        |blockwise-visual|.
+
+<Plug>*SchleppDupRight*   Duplicates the selected text and places it to the
+                        right of the current selection. Only works, and is the
+                        default in |blockwise-visual|. See |schlepp-dup-block|
+                        to change default.
+
+If you want just the basic dupliction behavior, and are happy with always
+duplicating in the same direction then the following may be a decent mapping. >
+    vmap <unique> D <Plug>SchleppDup
+<
+
+If you want the fine grained control over duplication direction. The following
+may be more appealing. >
+    vmap <unique> Dk <Plug>SchleppDupUp
+    vmap <unique> Dj <Plug>SchleppDupDown
+    vmap <unique> Dh <Plug>SchleppDupLeft
+    vmap <unique> Dl <Plug>SchleppDupRight
+<
+
+==============================================================================
+SCHLEPP OPTIONS                                     *schlepp-configuring*
+                                                    *schlepp-options*
+
+Any of the following options can be set in your |vimrc| if you would like to
+change them from the default.
+
+Option                      Default     Behavior ~
+*g:Schlepp.allowSquishing*    0           *schlepp-squishing*
+                                        Enabling will let lines with leading
+                                        spaces move left, even when other lines
+                                        in the selection cannot move left.
+
+*g:Schlepp.trimWS*            1           *schlepp-trim-ws*
+                                        Disabling prevents schlepp from removing
+                                        trailing whitespace in
+                                        |blockwise-visual| selections after
+                                        movement.
+
+*g:Schlepp.reindent*          0           *schlepp-toggle-reindent*
+                                        Enabling will make schlepp by default 
+                                        auto-reindent text when moving.
+
+*g:Schlepp.moveIntoFolds*     0           *schlepp-move-into-folds*
+                                        Todo: Finish functionaly, and document
+
+*g:Schlepp.dupTrimWS*         0           *schlepp-dup-trim-ws*
+                                        Enabling will make schlepp trim trailing
+                                        whitespace from newly duplicated text.
+                                        Default is off since this really isn't a
+                                        common problem, and it slows down the
+                                        operation slightly if its enabled.
+
+*g:Schlepp.dupLinesDir*       "down"      *schlepp-dup-lines*
+                                        Only other valid direction is "up".
+                                        Changes the default behavior of
+                                        |SchleppDup| in |linewise-visual| mode.
+
+*g:Schlepp.dupBlockDir*       "right"     *schlepp-dup-block*
+                                        Valid directions are "up", "down",
+                                        "right", and "left". Changes the default
+                                        behavior of |SchleppDup| in
+                                        |blockwise-visual| mode.
+
+
+ vim:tw=80:ts=4:ft=help:norl
