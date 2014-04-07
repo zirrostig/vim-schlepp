@@ -1,6 +1,6 @@
 "Schlepp.vim - Easy movement of lines/blocks of text
 "Maintainer:    Zachary Stigall <zirrostig <at> lanfort.org>
-"Date:          2 March 2014
+"Date:          7 March 2014
 "License:       VIM
 "
 "Inspired by Damian Conway's DragVisuals
