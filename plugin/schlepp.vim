@@ -146,8 +146,6 @@ function! s:SchleppBlock(dir)
 "  Logic for moving a visual block selection, this is much more complicated than
 "  lines since I have to be able to part text in order to insert the incoming
 "  line
-"  TODO:
-"       Get whitespace striping inplace
 
     "Save virtualedit settings, and enable for the function
     let l:ve_save = &l:virtualedit
@@ -192,14 +190,12 @@ function! s:SchleppBlock(dir)
 
         "Strip Whitespace
         "Need new positions since the visual area has moved
-        if g:Schlepp.trimWS != 0
+        if g:Schlepp.trimWS
             let [l:fbuf, l:fline, l:fcol, l:foff] = getpos("'<")
             let [l:lbuf, l:lline, l:lcol, l:loff] = getpos("'>")
             let [l:left_col, l:right_col]  = sort([l:fcol + l:foff, l:lcol + l:loff])
             for l:linenum in range(l:fline, l:lline)
-                if l:right_col == len(getline(l:linenum))
-                    call setline(l:linenum, substitute(getline(l:linenum), "\\s\\+$", "", ""))
-                endif
+                call setline(l:linenum, substitute(getline(l:linenum), "\\s\\+$", "", ""))
             endfor
             "Take care of trailing space created on lines above or below while
             "moving past them
@@ -212,7 +208,6 @@ function! s:SchleppBlock(dir)
 
     endtry
     let &l:virtualedit = l:ve_save
-
 
 endfunction "}}}
 "{{{ s:SchleppToggleReindent()
