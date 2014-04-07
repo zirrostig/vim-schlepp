@@ -9,11 +9,9 @@
 "
 "This differs in that it is an attempt to improve the code, make it faster and
 "remove some of the small specific issuses that can seemingly randomly bite you
-"when you least expect it.
-"
+"when you least expect it. And add some new stuff :)
 "IDEAS and TODO
 "   Suppress Messages about 'x fewer lines'
-"   Make movement with recalc indent
 "   Don't affect the users command and search history (Is this happening?)
 "   UndoJoin needs to not join between Line and Block modes (may not already - untested)
 "   Add padding function, that inserts a space or newline in the direction specified
@@ -31,7 +29,6 @@ let g:Schlepp = {}
 let g:Schlepp.allowSquishing = 0
 let g:Schlepp.trimWS = 1
 let g:Schlepp.reindent = 0
-let g:Schlepp.moveIntoFolds = 0
 "}}}
 "{{{  Mappings
 noremap <unique> <script> <Plug>SchleppUp <SID>SchleppUp
@@ -363,18 +360,18 @@ endfunction "}}}
 function! s:CheckUndo(md)
     if !exists("b:schleppState")
         let b:schleppState = {}
-        let b:schleppState.lastNr = changenr()
+        let b:schleppState.lastNr = undotree().seq_last
         let b:schleppState.lastMd = a:md
         return 0
     endif
 
-    if b:schleppState.lastNr == changenr() - 1 &&  b:schleppState.lastMd == a:md
+    if changenr() == undotree().seq_last && b:schleppState.lastNr == (changenr() - 1) &&  b:schleppState.lastMd == a:md
         return 1
     endif
 
     "else
-    let b:SchleppLastNr = changenr()
-    let b:SchleppLastMd = a:md
+    let b:schleppState.lastNr = undotree().seq_last
+    let b:schleppState.lastMd = a:md
     return 0
 endfunction
 "}}}

@@ -128,9 +128,6 @@ Option                      Default     Behavior ~
                                         Enabling will make schlepp by default 
                                         auto-reindent text when moving.
 
-*g:Schlepp.moveIntoFolds*     0           *schlepp-move-into-folds*
-                                        Todo: Finish functionaly, and document
-
 *g:Schlepp.dupTrimWS*         0           *schlepp-dup-trim-ws*
                                         Enabling will make schlepp trim trailing
                                         whitespace from newly duplicated text.
