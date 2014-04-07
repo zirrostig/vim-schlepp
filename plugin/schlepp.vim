@@ -100,7 +100,7 @@ function! s:SchleppLines(dir, reindent)
     "build normal command string to reselect the VisualLine area
     let l:fline = line("'<")
     let l:lline = line("'>")
-    let l:reindent_cmd = (a:reindent ? "=gv" : "")
+    let l:reindent_cmd = (a:reindent ? "gv=" : "")
 
     if a:dir ==? "up" "{{{ Up
         if l:fline == 1 "First lines of file, move everything else down
