@@ -56,13 +56,14 @@ Command                             Action ~
 <Plug>*SchleppIndentUp*               Moves selection up, and reindents.
 <Plug>*SchleppIndentDown*             Moves selection down, and reindents.
 
-I like to map just the toggle function. >
+Using Shift with up or down works pretty well, but not all terminals will send
+shifted arrows. In GVIM this should work. >
+    vmap <unique> <S-up>   <Plug>SchleppIndentUp
+    vmap <unique> <S-down> <Plug>SchleppIndentDown
+<
+But I like to just map the toggle function. >
     vmap <unique> i <Plug>SchleppToggleReindent
 <
-I also like to map |=| to reselect after reindenting in visual mode. >
-    vnoremap = =gv
-<
-
 Some behaviors when moving text can be changed with a couple settings.
 |schlepp-options|
 

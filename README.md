@@ -26,7 +26,7 @@ Movement
 Add the following mappings to your vimrc, feel free to change from using the
 arrows to something more to your vim usage.
 
-```vimscript
+```viml
 vmap <unique> <up>    <Plug>SchleppUp
 vmap <unique> <down>  <Plug>SchleppDown
 vmap <unique> <left>  <Plug>SchleppLeft
@@ -36,32 +36,38 @@ vmap <unique> <right> <Plug>SchleppRight
 When moving text left, Schlepp by default does not allow you to move left if any
 text is all the way left.
 To allow the 'Squishing' of text add this line to your vimrc
-```vimscript
+```viml
 let g:Schlepp.allowSquishing = 1
 ```
 
 To disable trailing whitespace removal on block move
-```vimscript
+```viml
 let g:Schlepp.trimWS = 0
 ```
 
-Schlepp can also reindent as it moves. Any of these work
+Schlepp can also reindent code as it moves. Any of these work
 * SchleppUp with reindentation is SchleppIndentUp
 * SchleppDown with reindentation is SchleppIndentDown
 * let g:Schlepp.reindent = 1
 * map to the toggle function (below) - This is how I like to use it
-```vimscript
+```viml
 vmap <unique> i <Plug>SchleppToggleReindent
+```
+
+And if you have GVIM (or a fancy terminal?) this should work well.
+```viml
+vmap <unique> <S-up>   <Plug>SchleppIndentUp
+vmap <unique> <S-down> <Plug>SchleppIndentDown
 ```
 
 Duplication
 -----------
 Some suggested mappings
-```vimscript
+```viml
 vmap <unique> D <Plug>SchleppDup
 ```
 or if you want fine grained control
-```vimscript
+```viml
 vmap <unique> Dk <Plug>SchleppDupUp
 vmap <unique> Dj <Plug>SchleppDupDown
 vmap <unique> Dh <Plug>SchleppDupLeft
@@ -71,13 +77,13 @@ or set the default direction for SchleppDup
 * DupLines can be "up" or "down"
 * DupBlock can be "up", "down", "left", or "right"
 * shown below are the defaults
-```vimscript
+```viml
 let g:Schlepp.dupLinesDir = "down"
 let g:Schlepp.dupBlockDir = "right"
 ```
 
 To enable trailing whitespace removal on block duplication
-```vimscript
+```viml
 let g:Schlepp.dupTrimWS = 1
 ```
 
