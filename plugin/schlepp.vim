@@ -1,6 +1,6 @@
 "Schlepp.vim - Easy movement of lines/blocks of text
 "Maintainer:    Zachary Stigall <zirrostig <at> lanfort.org>
-"Date:          7 March 2014
+"Date:          9 March 2014
 "License:       VIM
 "
 "Inspired by Damian Conway's DragVisuals
@@ -175,8 +175,8 @@ function! s:SchleppBlock(dir)
             "}}}
         elseif a:dir ==? "left" "{{{ Left
             if l:left_col == 1
+                execute "normal! gvA \<esc>"
                 if g:Schlepp.allowSquishingBlock || match(getline(l:fline, l:lline), '^[^ \t]') == -1
-                    execute "normal! gvA \<esc>"
                     for l:linenum in range(l:fline, l:lline)
                         if match(getline(l:linenum), "^[ \t]") != -1
                             call setline(l:linenum, substitute(getline(l:linenum), "^\\s", "", ""))
