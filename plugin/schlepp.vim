@@ -29,6 +29,7 @@ let g:Schlepp = {}
 let g:Schlepp.allowSquishing = 0
 let g:Schlepp.trimWS = 1
 let g:Schlepp.reindent = 0
+let g:Schlepp.useShiftWidthLines = 0
 "}}}
 "{{{  Mappings
 noremap <unique> <script> <Plug>SchleppUp <SID>SchleppUp
@@ -117,27 +118,26 @@ function! s:SchleppLines(dir, reindent)
             execute "normal! :'<,'>m'>+1\<CR>" . l:reindent_cmd . "gv"
         endif "}}}
     elseif a:dir ==? "right" "{{{ Right
-        for l:linenum in range(l:fline, l:lline)
-            let l:line = getline(l:linenum)
-            "Only insert space if the line is not empty
-            if match(l:line, "^$") == -1
-                call setline(linenum, " ".l:line)
-            endif
-        endfor
+        if g:Schlepp.useShiftWidthLines
+            normal! gv>
+        else
+            for l:linenum in range(l:fline, l:lline)
+                let l:line = getline(l:linenum)
+                "Only insert space if the line is not empty
+                if match(l:line, "^$") == -1
+                    call setline(linenum, " ".l:line)
+                endif
+            endfor
+        endif
         call s:ResetSelection() "}}}
     elseif a:dir ==? "left" "{{{ Left
-        if g:Schlepp.allowSquishing != 0 "Squish the lines left
-            let l:lines = getline(l:fline, l:lline)
-            if !(match(l:lines, '^[^ \t]') == -1)
-                call s:ResetSelection()
-                return
-            endif
+        if g:Schlepp.useShiftWidthLines
+            normal! gv<
+        elseif g:Schlepp.allowSquishing || match(getline(l:fline, l:lline), '^[^ \t]') == -1
+            for l:linenum in range(l:fline, l:lline)
+                call setline(l:linenum, substitute(getline(l:linenum), "^\\s", "", ""))
+            endfor
         endif
-
-        for l:linenum in range(l:fline, l:lline)
-            call setline(l:linenum, substitute(getline(l:linenum), "^\\s", "", ""))
-        endfor
-
         call s:ResetSelection()
     endif "}}}
 endfunction "}}}
@@ -175,6 +175,8 @@ function! s:SchleppBlock(dir)
             normal! gvxpgvlolo
             "}}}
         elseif a:dir ==? "left" "{{{ Left
+            if g:Schlepp.useShiftWidthBlock
+                normal! gv<
             if l:left_col == 1
                 if g:Schlepp.allowSquishing != 0
                     for l:linenum in range(l:fline, l:lline)
@@ -185,8 +187,7 @@ function! s:SchleppBlock(dir)
             else
                 normal! gvxhPgvhoho
             endif
-            "}}}
-        endif
+        endif "}}}
 
         "Strip Whitespace
         "Need new positions since the visual area has moved
@@ -380,6 +381,16 @@ function! s:NrCmp(i1, i2)
     return a:i1 - a:i2
 endfunction
 "}}}
+"{{{ s:sw()
+if exists('*shiftwidth')
+    function! s:sw()
+        return shiftwidth()
+    endfunction
+else
+    function s:sw()
+        return &sw
+    endfunction
+endif
 "}}}
 
 " vim: ts=4 sw=4 et fdm=marker

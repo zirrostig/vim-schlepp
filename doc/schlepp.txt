@@ -58,6 +58,9 @@ Command                             Action ~
 I like to map just the toggle function. >
     vmap <unique> i <Plug>SchleppToggleReindent
 <
+I also like to map |=| to reselect after reindenting in visual mode. >
+    vnoremap = =gv
+<
 
 Some behaviors when moving text can be changed with a couple settings.
 |schlepp-options|
@@ -112,39 +115,51 @@ SCHLEPP OPTIONS                                     *schlepp-configuring*
 Any of the following options can be set in your |vimrc| if you would like to
 change them from the default.
 
-Option                      Default     Behavior ~
-*g:Schlepp.allowSquishing*    0           *schlepp-squishing*
-                                        Enabling will let lines with leading
-                                        spaces move left, even when other lines
-                                        in the selection cannot move left.
+Option                          Default     Behavior ~
+*g:Schlepp.allowSquishing*        0           *schlepp-squishing*
+                                            Enabling will let lines with
+                                            leading spaces move left, even
+                                            when other lines in the selection
+                                            cannot move left.
 
-*g:Schlepp.trimWS*            1           *schlepp-trim-ws*
-                                        Disabling prevents schlepp from removing
-                                        trailing whitespace in
-                                        |blockwise-visual| selections after
-                                        movement.
+*g:Schlepp.trimWS*                1           *schlepp-trim-ws*
+                                            Disabling prevents schlepp from
+                                            removing trailing whitespace in
+                                            |blockwise-visual| selections
+                                            after movement.
 
-*g:Schlepp.reindent*          0           *schlepp-toggle-reindent*
-                                        Enabling will make schlepp by default 
-                                        auto-reindent text when moving.
+*g:Schlepp.reindent*              0           *schlepp-toggle-reindent*
+                                            Enabling will make schlepp by
+                                            default auto-reindent text when
+                                            moving.
 
-*g:Schlepp.dupTrimWS*         0           *schlepp-dup-trim-ws*
-                                        Enabling will make schlepp trim trailing
-                                        whitespace from newly duplicated text.
-                                        Default is off since this really isn't a
-                                        common problem, and it slows down the
-                                        operation slightly if its enabled.
+*g:Schlepp.useShiftWidthLines*    0           *schlepp-use-shiftwidth-lines*
+                                            Enabling will make schlepp use |<|
+                                            or |>| when moving lines left or
+                                            right. 
+                                            NOTE: Ignores
+                                            |g:Schlepp.allowSquishing|
+                                            setting
 
-*g:Schlepp.dupLinesDir*       "down"      *schlepp-dup-lines*
-                                        Only other valid direction is "up".
-                                        Changes the default behavior of
-                                        |SchleppDup| in |linewise-visual| mode.
+*g:Schlepp.dupTrimWS*             0           *schlepp-dup-trim-ws*
+                                            Enabling will make schlepp trim
+                                            trailing whitespace from newly
+                                            duplicated text. Default is off
+                                            since this really isn't a common
+                                            problem, and it slows down the
+                                            operation slightly if its enabled.
 
-*g:Schlepp.dupBlockDir*       "right"     *schlepp-dup-block*
-                                        Valid directions are "up", "down",
-                                        "right", and "left". Changes the default
-                                        behavior of |SchleppDup| in
-                                        |blockwise-visual| mode.
+*g:Schlepp.dupLinesDir*           "down"      *schlepp-dup-lines*
+                                            Only other valid direction is
+                                            "up". Changes the default behavior
+                                            of |SchleppDup| in
+                                            |linewise-visual| mode.
+
+*g:Schlepp.dupBlockDir*           "right"     *schlepp-dup-block*
+                                            Valid directions are "up", "down",
+                                            "right", and "left". Changes the
+                                            default behavior of |SchleppDup|
+                                            in |blockwise-visual| mode.
 
 
  vim:tw=80:ts=4:ft=help:norl
