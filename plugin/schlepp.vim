@@ -16,8 +16,6 @@
 "   UndoJoin needs to not join between Line and Block modes (may not already - untested)
 "   Add padding function, that inserts a space or newline in the direction specified
 
-"====[ Core Implementation ]==================================================
-
 if exists("g:Schlepp#Loaded")
     finish
 endif
@@ -26,7 +24,8 @@ let g:Schlepp#Loaded = 1
 "{{{ Schlepp Movement
 "{{{ Globals
 let g:Schlepp = {}
-let g:Schlepp.allowSquishing = 0
+let g:Schlepp.allowSquishingLines = 0
+let g:Schlepp.allowSquishingBlock = 0
 let g:Schlepp.trimWS = 1
 let g:Schlepp.reindent = 0
 let g:Schlepp.useShiftWidthLines = 0
@@ -133,7 +132,7 @@ function! s:SchleppLines(dir, reindent)
     elseif a:dir ==? "left" "{{{ Left
         if g:Schlepp.useShiftWidthLines
             normal! gv<
-        elseif g:Schlepp.allowSquishing || match(getline(l:fline, l:lline), '^[^ \t]') == -1
+        elseif g:Schlepp.allowSquishingLines || match(getline(l:fline, l:lline), '^[^ \t]') == -1
             for l:linenum in range(l:fline, l:lline)
                 call setline(l:linenum, substitute(getline(l:linenum), "^\\s", "", ""))
             endfor
@@ -175,12 +174,14 @@ function! s:SchleppBlock(dir)
             normal! gvxpgvlolo
             "}}}
         elseif a:dir ==? "left" "{{{ Left
-            if g:Schlepp.useShiftWidthBlock
-                normal! gv<
             if l:left_col == 1
-                if g:Schlepp.allowSquishing != 0
+                if g:Schlepp.allowSquishingBlock || match(getline(l:fline, l:lline), '^[^ \t]') == -1
+                    execute "normal! gvA \<esc>"
                     for l:linenum in range(l:fline, l:lline)
-                        call setline(l:linenum, substitute(getline(l:linenum), "^\\s", "", ""))
+                        if match(getline(l:linenum), "^[ \t]") != -1
+                            call setline(l:linenum, substitute(getline(l:linenum), "^\\s", "", ""))
+                            execute "normal! :" . l:linenum . "\<cr>" . l:right_col . "|a \<esc>"
+                        endif
                     endfor
                 endif
                 call s:ResetSelection()

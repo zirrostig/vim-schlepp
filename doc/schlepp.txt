@@ -32,7 +32,8 @@ Command               Action ~
 <Plug>*SchleppDown*     Moves selected text down 1 line.
 <Plug>*SchleppLeft*     Moves selected text to the left 1 char. By default will
                       not allow text to be "squished" to the left upon hitting
-                      the left most column. See |schlepp-squishing|.
+                      the left most column. See |schlepp-squishing-lines| and
+                      |schlepp-squishing-blocks|.
 
 <Plug>*SchleppRight*    Moves selected text to the right 1 char.
 
@@ -116,11 +117,12 @@ Any of the following options can be set in your |vimrc| if you would like to
 change them from the default.
 
 Option                          Default     Behavior ~
-*g:Schlepp.allowSquishing*        0           *schlepp-squishing*
-                                            Enabling will let lines with
-                                            leading spaces move left, even
-                                            when other lines in the selection
-                                            cannot move left.
+*g:Schlepp.allowSquishingLines*   0           *schlepp-squishing-lines*
+*g:Schlepp.allowSquishingBlock*   0           *schlepp-squishing-block*
+                                            Enabling will let lines/blocks
+                                            with leading spaces move left,
+                                            even when other lines in the
+                                            selection cannot move left.
 
 *g:Schlepp.trimWS*                1           *schlepp-trim-ws*
                                             Disabling prevents schlepp from
@@ -129,9 +131,10 @@ Option                          Default     Behavior ~
                                             after movement.
 
 *g:Schlepp.reindent*              0           *schlepp-toggle-reindent*
-                                            Enabling will make schlepp by
-                                            default auto-reindent text when
+                                            Enabling will make schlepp, by
+                                            default, auto-reindent text when
                                             moving.
+                                            NOTE: Only in |linewise-visual|
 
 *g:Schlepp.useShiftWidthLines*    0           *schlepp-use-shiftwidth-lines*
                                             Enabling will make schlepp use |<|
@@ -139,6 +142,10 @@ Option                          Default     Behavior ~
                                             right. 
                                             NOTE: Ignores
                                             |g:Schlepp.allowSquishing|
+                                            Enabling will let lines/blocks with
+                                            leading spaces move left, even
+                                            when other lines in the selection
+                                            cannot move left.
                                             setting
 
 *g:Schlepp.dupTrimWS*             0           *schlepp-dup-trim-ws*
