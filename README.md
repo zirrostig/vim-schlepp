@@ -4,6 +4,10 @@ Vim plugin to allow the movement of lines (or blocks) of text around easily.
 Inspired by Damian Conway's DragVisuals from his
 [More Instantly Better Vim](http://programming.oreilly.com/2013/10/more-instantly-better-vim.html)
 
+The big difference between this and dragvisuals is that schlepp is much faster
+when working over large selections of text, has more features, more
+configurable, and hopefully has fewer gotchas.
+
 What it Does
 ============
 Schlepp lets you move a highlighted (visual mode) section of text around,
