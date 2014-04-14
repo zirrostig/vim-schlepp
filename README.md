@@ -21,6 +21,46 @@ Additionally run for more info
 Setup
 =====
 
+Installation
+------------
+
+* NeoBundle
+
+    Add to vimrc
+    ```viml
+    NeoBundle 'zirrostig/vim-schlepp'
+    ```
+    Then run
+    ```
+    vim +NeoBundleCheck +qall
+    ```
+
+* Pathogen
+
+    If you use submodules you probably don't need my help.
+    ```
+    git clone https://github.com/zirrostig/vim-schlepp.git ~/.vim/bundle/vim-schlepp
+    ```
+
+* Vundle
+
+    Add to vimrc
+    ```viml
+    Bundle 'zirrostig/vim-schlepp'
+    ```
+    Then run
+    ```
+    vim +PluginInstall +qall
+    ```
+
+* No plugin management
+    * Get some plugin management (Recommend NeoBundle)
+    * OR
+    Place the files in this repo into your ~/.vim maintaining the directory
+    structure in this repo. Start up vim and run ':helptags doc'. Make sure it
+    works
+
+
 Movement
 --------
 Add the following mappings to your vimrc, feel free to change from using the

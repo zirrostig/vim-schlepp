@@ -1,19 +1,36 @@
 *schlepp.txt*       For Vim version 7.4.    Last change: 2014 April 9
-
-Author: Zachary Stigall
-License: VIM
+*schlepp*
 
 Move and duplicate selected text. Does nothing unless keys are bound to the
 various commands.
 
-Moving text around                                  *schlepp*
+==============================================================================
+CONTENTS                                                      *schlepp-contents*
 
-1. Schlepp Movement                 |schlepp-movement|
-2. Schlepp Duplication              |schlepp-duplication|
-3. Schlepp Options                  |schlepp-configuring|
+    Schlepp Movement                                          |schlepp-movement|
+        Movement Commands                                    |schlepp-move-cmds|
+        Suggested Mappings                               |schlepp-move-mappings|
+        Reindentation                                         |schlepp-reindent|
+    Schlepp Duplication                                    |schlepp-duplication|
+        Duplication Commands                                  |schlepp-dup-cmds|
+        Suggested Mappings                                |schlepp-dup-mappings|
+    Schlepp Options                                        |schlepp-configuring|
+        Squishing Linewise                             |schlepp-squishing-lines|
+        Squishing Blockwise                            |schlepp-squishing-block|
+        Trailing Whitespace Removal                            |schlepp-trim-ws|
+        Toggle Reindation on line move                 |schlepp-toggle-reindent|
+        Use '<' & '>' instead                     |schlepp-use-shiftwidth-lines|
+        Trailing Whitespace Romaval on Dup                 |schlepp-dup-trim-ws|
+        Direction for duplication of lines                   |schlepp-dup-lines|
+        Direction for duplication of blocks                  |schlepp-dup-block|
+    License                                                    |schlepp-license|
+    Bugs                                                          |schlepp-bugs|
+    Contributing                                          |schlepp-contributing|
+    Changelog                                                |schlepp-changelog|
+    Credits                                                    |schlepp-credits|
 
 ==============================================================================
-SCHLEPP MOVEMENT                                    *schlepp-movement*
+SCHLEPP MOVEMENT                                              *schlepp-movement*
 
 These are intended to be the most frequently used commands. They work in
 |linewise-visual| and |blockwise-visual| modes. Regular visual mode is not
@@ -22,11 +39,12 @@ selected, you can freely move it around your file, and text will reflow around
 the selection being moved, based on the |visual-mode| being used.
 
 In |blockwise-visual| mode, |schlepp| will automatically remove trailing
-whitespace from selections, due to its use of 'virtualedit' settings adding lots
-of whitespace in many cases, it tries to clean up after itself, but may
-inadvertently remove intentional whitespace. See |schlepp-trim-ws| to change the
-default.
+whitespace from selections, due to its use of 'virtualedit' settings adding
+lots of whitespace in many cases, it tries to clean up after itself, but may
+inadvertently remove intentional whitespace. See |schlepp-trim-ws| to change
+the default.
 
+                                                             *schlepp-move-cmds*
 Command               Action ~
 <Plug>*SchleppUp*       Moves selected text up 1 line.
 <Plug>*SchleppDown*     Moves selected text down 1 line.
@@ -37,6 +55,7 @@ Command               Action ~
 
 <Plug>*SchleppRight*    Moves selected text to the right 1 char.
 
+                                                         *schlepp-move-mappings*
 The recommended mappings are. >
     vmap <unique> <up>    <Plug>SchleppUp
     vmap <unique> <down>  <Plug>SchleppDown
@@ -44,7 +63,7 @@ The recommended mappings are. >
     vmap <unique> <right> <Plug>SchleppRight
 <
 
-                                                    *schlepp-reindent*
+                                                              *schlepp-reindent*
 Additionally when moving text |schlepp| can automatically use vim's reindent
 command as text is moved, making moving code around really easy (assuming your
 indentation style matches vim's).
@@ -52,7 +71,8 @@ Note: This only works in |linewise-visual| mode.
 
 Command                             Action ~
 <Plug>*SchleppToggleReindent*         Used to toggle reindentation mode on and
-                                    off. Default off. See |schlepp-toggle-reindent|
+                                    off. Default off. See
+                                    |schlepp-toggle-reindent|
 <Plug>*SchleppIndentUp*               Moves selection up, and reindents.
 <Plug>*SchleppIndentDown*             Moves selection down, and reindents.
 
@@ -68,13 +88,14 @@ Some behaviors when moving text can be changed with a couple settings.
 |schlepp-options|
 
 ==============================================================================
-SCHLEPP DUPLICATION                                 *schlepp-duplication*
+SCHLEPP DUPLICATION                                        *schlepp-duplication*
 
 While text is selected, it can be duplicated in one of a couple directions.
 |linewise-visual| lets you duplicate above or below the selected text, and
 |blockwise-visual| allows any of the four directions. By default |schlepp| will
 strip any trailing whitespace from the newly placed text.
 
+                                                              *schlepp-dup-cmds*
 Command                 Action ~
 <Plug>*SchleppDup*        Duplicates the selected text in the default direction,
                         below for |linewise-visual| and to the right for
@@ -97,6 +118,9 @@ Command                 Action ~
                         default in |blockwise-visual|. See |schlepp-dup-block|
                         to change default.
 
+
+
+                                                          *schlepp-dup-mappings*
 If you want just the basic dupliction behavior, and are happy with always
 duplicating in the same direction then the following may be a decent mapping. >
     vmap <unique> D <Plug>SchleppDup
@@ -111,8 +135,8 @@ may be more appealing. >
 <
 
 ==============================================================================
-SCHLEPP OPTIONS                                     *schlepp-configuring*
-                                                    *schlepp-options*
+SCHLEPP OPTIONS                                            *schlepp-configuring*
+                                                               *schlepp-options*
 
 Any of the following options can be set in your |vimrc| if you would like to
 change them from the default.
@@ -140,7 +164,7 @@ Option                          Default     Behavior ~
 *g:Schlepp.useShiftWidthLines*    0           *schlepp-use-shiftwidth-lines*
                                             Enabling will make schlepp use |<|
                                             or |>| when moving lines left or
-                                            right. 
+                                            right.
                                             NOTE: Ignores
                                             |g:Schlepp.allowSquishing|
                                             Enabling will let lines/blocks with
@@ -169,5 +193,47 @@ Option                          Default     Behavior ~
                                             default behavior of |SchleppDup|
                                             in |blockwise-visual| mode.
 
+==============================================================================
+LICENSE                                                        *schlepp-license*
 
- vim:tw=80:ts=4:ft=help:norl
+Schlepp is copyright Zachary Stigall & contributors and licensed under the
+VIM |license|.
+
+==============================================================================
+BUGS                                                              *schlepp-bugs*
+
+Please report any bugs you encounter to the github issue tracker:
+    https://github.com/zirrostig/vim-schlepp/issues
+
+==============================================================================
+CONTRIBUTING                                              *schlepp-contributing*
+
+Contributions are welcome.
+
+Fork schlepp from https://github.com/zirrostig/vim-schlepp and submit a pull
+request with you contribution.
+
+==============================================================================
+CHANGELOG                                                    *schlepp-changelog*
+
+v1.0.0
+    After fixing many little issues schlepp is now in its first ready state,
+    and is ready to be abused by vim users (I hope).
+pre1.0.0
+    Wow who would have thought moving selected text around would have this
+    many problems. If you really want to see the progress look at the commit
+    history.
+
+==============================================================================
+CREDITS                                                        *schlepp-credits*
+
+Schlepp was originally wrote by Zachary Stigall after being frustrated with
+the poor performance and bugginess of Damian Conway's DragVisuals. The
+wonderful people who have contributed to make this even better are listed
+below. Also thanks to my friends who listened to me rant endlessly about
+little issues and for providing feedback and testing for features.
+
+Contributors:                                             *schlepp-contributors*
+    Well this is embarrassing...
+
+vim:tw=78:ts=4:ft=help:norl
