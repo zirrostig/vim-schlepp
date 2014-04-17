@@ -142,38 +142,38 @@ Any of the following options can be set in your |vimrc| if you would like to
 change them from the default.
 
 Option                          Default     Behavior ~
-*g:Schlepp.allowSquishingLines*   0           *schlepp-squishing-lines*
-*g:Schlepp.allowSquishingBlock*   0           *schlepp-squishing-block*
+*g:Schlepp#allowSquishingLines*   0           *schlepp-squishing-lines*
+*g:Schlepp#allowSquishingBlock*   0           *schlepp-squishing-block*
                                             Enabling will let lines/blocks
                                             with leading spaces move left,
                                             even when other lines in the
                                             selection cannot move left.
 
-*g:Schlepp.trimWS*                1           *schlepp-trim-ws*
+*g:Schlepp#trimWS*                1           *schlepp-trim-ws*
                                             Disabling prevents schlepp from
                                             removing trailing whitespace in
                                             |blockwise-visual| selections
                                             after movement.
 
-*g:Schlepp.reindent*              0           *schlepp-toggle-reindent*
+*g:Schlepp#reindent*              0           *schlepp-toggle-reindent*
                                             Enabling will make schlepp, by
                                             default, auto-reindent text when
                                             moving.
                                             NOTE: Only in |linewise-visual|
 
-*g:Schlepp.useShiftWidthLines*    0           *schlepp-use-shiftwidth-lines*
+*g:Schlepp#useShiftWidthLines*    0           *schlepp-use-shiftwidth-lines*
                                             Enabling will make schlepp use |<|
                                             or |>| when moving lines left or
                                             right.
                                             NOTE: Ignores
-                                            |g:Schlepp.allowSquishing|
+                                            |g:Schlepp#allowSquishing|
                                             Enabling will let lines/blocks with
                                             leading spaces move left, even
                                             when other lines in the selection
                                             cannot move left.
                                             setting
 
-*g:Schlepp.dupTrimWS*             0           *schlepp-dup-trim-ws*
+*g:Schlepp#dupTrimWS*             0           *schlepp-dup-trim-ws*
                                             Enabling will make schlepp trim
                                             trailing whitespace from newly
                                             duplicated text. Default is off
@@ -181,13 +181,13 @@ Option                          Default     Behavior ~
                                             problem, and it slows down the
                                             operation slightly if its enabled.
 
-*g:Schlepp.dupLinesDir*           "down"      *schlepp-dup-lines*
+*g:Schlepp#dupLinesDir*           "down"      *schlepp-dup-lines*
                                             Only other valid direction is
                                             "up". Changes the default behavior
                                             of |SchleppDup| in
                                             |linewise-visual| mode.
 
-*g:Schlepp.dupBlockDir*           "right"     *schlepp-dup-block*
+*g:Schlepp#dupBlockDir*           "right"     *schlepp-dup-block*
                                             Valid directions are "up", "down",
                                             "right", and "left". Changes the
                                             default behavior of |SchleppDup|
@@ -216,6 +216,9 @@ request with you contribution.
 ==============================================================================
 CHANGELOG                                                    *schlepp-changelog*
 
+v1.0.1
+    Realized that a dictionary cannot be used for user settings without being
+    imposing on users.
 v1.0.0
     After fixing many little issues schlepp is now in its first ready state,
     and is ready to be abused by vim users (I hope).

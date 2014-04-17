@@ -22,13 +22,22 @@ endif
 let g:Schlepp#Loaded = 1
 
 "{{{ Schlepp Movement
-"{{{ Globals
-let g:Schlepp = {}
-let g:Schlepp.allowSquishingLines = 0
-let g:Schlepp.allowSquishingBlock = 0
-let g:Schlepp.trimWS = 1
-let g:Schlepp.reindent = 0
-let g:Schlepp.useShiftWidthLines = 0
+"{{{ User Config
+if !exists("g:Schlepp#allowSquishingLines")
+    let g:Schlepp#allowSquishingLines = 0
+endif
+if !exists("g:Schlepp#allowSquishingBlock")
+    let g:Schlepp#allowSquishingBlock = 0
+endif
+if !exists("g:Schlepp#trimWS")
+    let g:Schlepp#trimWS = 1
+endif
+if !exists("g:Schlepp#reindent")
+    let g:Schlepp#reindent = 0
+endif
+if !exists("g:Schlepp#useShiftWidthLines")
+    let g:Schlepp#useShiftWidthLines = 0
+endif
 "}}}
 "{{{  Mappings
 noremap <unique> <script> <Plug>SchleppUp <SID>SchleppUp
@@ -77,7 +86,7 @@ function! s:Schlepp(dir, ...) range
         if a:0 >= 1
             let l:reindent = a:1
         else
-            let l:reindent = g:Schlepp.reindent
+            let l:reindent = g:Schlepp#reindent
         endif
 
         if s:CheckUndo(l:md)
@@ -117,7 +126,7 @@ function! s:SchleppLines(dir, reindent)
             execute "normal! :'<,'>m'>+1\<CR>" . l:reindent_cmd . "gv"
         endif "}}}
     elseif a:dir ==? "right" "{{{ Right
-        if g:Schlepp.useShiftWidthLines
+        if g:Schlepp#useShiftWidthLines
             normal! gv>
         else
             for l:linenum in range(l:fline, l:lline)
@@ -130,9 +139,9 @@ function! s:SchleppLines(dir, reindent)
         endif
         call s:ResetSelection() "}}}
     elseif a:dir ==? "left" "{{{ Left
-        if g:Schlepp.useShiftWidthLines
+        if g:Schlepp#useShiftWidthLines
             normal! gv<
-        elseif g:Schlepp.allowSquishingLines || match(getline(l:fline, l:lline), '^[^ \t]') == -1
+        elseif g:Schlepp#allowSquishingLines || match(getline(l:fline, l:lline), '^[^ \t]') == -1
             for l:linenum in range(l:fline, l:lline)
                 call setline(l:linenum, substitute(getline(l:linenum), "^\\s", "", ""))
             endfor
@@ -176,7 +185,7 @@ function! s:SchleppBlock(dir)
         elseif a:dir ==? "left" "{{{ Left
             if l:left_col == 1
                 execute "normal! gvA \<esc>"
-                if g:Schlepp.allowSquishingBlock || match(getline(l:fline, l:lline), '^[^ \t]') == -1
+                if g:Schlepp#allowSquishingBlock || match(getline(l:fline, l:lline), '^[^ \t]') == -1
                     for l:linenum in range(l:fline, l:lline)
                         if match(getline(l:linenum), "^[ \t]") != -1
                             call setline(l:linenum, substitute(getline(l:linenum), "^\\s", "", ""))
@@ -192,7 +201,7 @@ function! s:SchleppBlock(dir)
 
         "Strip Whitespace
         "Need new positions since the visual area has moved
-        if g:Schlepp.trimWS
+        if g:Schlepp#trimWS
             let [l:fbuf, l:fline, l:fcol, l:foff] = getpos("'<")
             let [l:lbuf, l:lline, l:lcol, l:loff] = getpos("'>")
             let [l:left_col, l:right_col]  = sort([l:fcol + l:foff, l:lcol + l:loff])
@@ -214,19 +223,25 @@ function! s:SchleppBlock(dir)
 endfunction "}}}
 "{{{ s:SchleppToggleReindent()
 function! s:SchleppToggleReindent()
-    if g:Schlepp.reindent == 0
-        let g:Schlepp.reindent = 1
+    if g:Schlepp#reindent == 0
+        let g:Schlepp#reindent = 1
     else
-        let g:Schlepp.reindent = 0
+        let g:Schlepp#reindent = 0
     endif
     call s:ResetSelection()
 endfunction "}}}
 "}}}
 "{{{ Schlepp Duplication
-"{{{ Globals
-let g:Schlepp.dupLinesDir = "down"
-let g:Schlepp.dupBlockDir = "right"
-let g:Schlepp.dupTrimWS = 0
+"{{{ User Config
+if !exists("g:Schlepp#dupLinesDir")
+    let g:Schlepp#dupLinesDir = "down"
+endif
+if !exists("g:Schlepp#dupBlockDir")
+    let g:Schlepp#dupBlockDir = "right"
+endif
+if !exists("g:Schlepp#dupTrimWS")
+    let g:Schlepp#dupTrimWS = 0
+endif
 ""}}}
 "{{{ Mappings
 noremap <unique> <script> <Plug>SchleppDupUp <SID>SchleppDupUp
@@ -261,7 +276,7 @@ function! s:SchleppDup(...) range
         if a:0 >= 1
             let l:dir = a:1
         else
-            let l:dir = g:Schlepp.dupLinesDir
+            let l:dir = g:Schlepp#dupLinesDir
         endif
 
         if l:dir ==? "up" || l:dir ==? "down"
@@ -275,7 +290,7 @@ function! s:SchleppDup(...) range
         if a:0 >= 1
             let l:dir = a:1
         else
-            let l:dir = g:Schlepp.dupBlockDir
+            let l:dir = g:Schlepp#dupBlockDir
         endif
 
         call s:SchleppDupBlock(l:dir)
@@ -337,7 +352,7 @@ function! s:SchleppDupBlock(dir)
 
         "Strip Whitespace
         "Need new positions since the visual area has moved
-        if g:Schlepp.dupTrimWS != 0
+        if g:Schlepp#dupTrimWS != 0
             let [l:fbuf, l:fline, l:fcol, l:foff] = getpos("'<")
             let [l:lbuf, l:lline, l:lcol, l:loff] = getpos("'>")
             let [l:left_col, l:right_col]  = sort([l:fcol + l:foff, l:lcol + l:loff])
