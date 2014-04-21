@@ -23,21 +23,11 @@ let g:Schlepp#Loaded = 1
 
 "{{{ Schlepp Movement
 "{{{ User Config
-if !exists("g:Schlepp#allowSquishingLines")
-    let g:Schlepp#allowSquishingLines = 0
-endif
-if !exists("g:Schlepp#allowSquishingBlock")
-    let g:Schlepp#allowSquishingBlock = 0
-endif
-if !exists("g:Schlepp#trimWS")
-    let g:Schlepp#trimWS = 1
-endif
-if !exists("g:Schlepp#reindent")
-    let g:Schlepp#reindent = 0
-endif
-if !exists("g:Schlepp#useShiftWidthLines")
-    let g:Schlepp#useShiftWidthLines = 0
-endif
+let g:Schlepp#allowSquishingLines = get(g:, 'Schlepp#allowSquishingLines', 0)
+let g:Schlepp#allowSquishingBlock = get(g:, 'Schlepp#allowSquishingBlock', 0)
+let g:Schlepp#trimWS = get(g:, 'Schlepp#trimWS', 1)
+let g:Schlepp#reindent = get(g:, 'Schlepp#reindent', 0)
+let g:Schlepp#useShiftWidthLines = get(g:, 'Schlepp#useShiftWidthLines', 0)
 "}}}
 "{{{  Mappings
 noremap <unique> <script> <Plug>SchleppUp <SID>SchleppUp
@@ -233,15 +223,9 @@ endfunction "}}}
 "}}}
 "{{{ Schlepp Duplication
 "{{{ User Config
-if !exists("g:Schlepp#dupLinesDir")
-    let g:Schlepp#dupLinesDir = "down"
-endif
-if !exists("g:Schlepp#dupBlockDir")
-    let g:Schlepp#dupBlockDir = "right"
-endif
-if !exists("g:Schlepp#dupTrimWS")
-    let g:Schlepp#dupTrimWS = 0
-endif
+let g:Schlepp#dupLinesDir = get(g:, 'Schlepp#dupLinesDir', "down")
+let g:Schlepp#dupBlockDir = get(g:, 'Schlepp#dupBlockDir', "right")
+let g:Schlepp#dupTrimWS = get(g:, 'Schlepp#dupTrimWS', 0)
 ""}}}
 "{{{ Mappings
 noremap <unique> <script> <Plug>SchleppDupUp <SID>SchleppDupUp
