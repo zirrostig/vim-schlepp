@@ -44,11 +44,13 @@ noremap <unique> <script> <Plug>SchleppUp <SID>SchleppUp
 noremap <unique> <script> <Plug>SchleppDown <SID>SchleppDown
 noremap <unique> <script> <Plug>SchleppLeft <SID>SchleppLeft
 noremap <unique> <script> <Plug>SchleppRight <SID>SchleppRight
+noremap <unique> <script> <Plug>SchleppDup <SID>SchleppDup
 
 noremap <SID>SchleppUp    :call <SID>Schlepp("Up")<CR>
 noremap <SID>SchleppDown  :call <SID>Schlepp("Down")<CR>
 noremap <SID>SchleppLeft  :call <SID>Schlepp("Left")<CR>
 noremap <SID>SchleppRight :call <SID>Schlepp("Right")<CR>
+noremap <SID>SchleppDup   :call <SID>SchleppDup()<CR>
 
 "Reindent Mappings
 "These are only done on VisualLine Mode
