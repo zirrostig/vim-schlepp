@@ -156,6 +156,9 @@ function! s:SchleppBlock(dir)
         let [l:fbuf, l:fline, l:fcol, l:foff] = getpos("'<")
         let [l:lbuf, l:lline, l:lcol, l:loff] = getpos("'>")
         let [l:left_col, l:right_col]  = sort([l:fcol + l:foff, l:lcol + l:loff])
+        if &selection ==# "exclusive" && l:fcol + l:foff < l:lcol + l:loff
+            let l:right_col -= 1
+        endif
 
         if a:dir ==? "up" "{{{ Up
             if l:fline == 1 "First lines of file
@@ -195,6 +198,9 @@ function! s:SchleppBlock(dir)
             let [l:fbuf, l:fline, l:fcol, l:foff] = getpos("'<")
             let [l:lbuf, l:lline, l:lcol, l:loff] = getpos("'>")
             let [l:left_col, l:right_col]  = sort([l:fcol + l:foff, l:lcol + l:loff])
+            if &selection ==# "exclusive" && l:fcol + l:foff < l:lcol + l:loff
+                let l:right_col -= 1
+            endif
             for l:linenum in range(l:fline, l:lline)
                 call setline(l:linenum, substitute(getline(l:linenum), "\\s\\+$", "", ""))
             endfor
@@ -305,6 +311,9 @@ function! s:SchleppDupBlock(dir)
         let [l:fbuf, l:fline, l:fcol, l:foff] = getpos("'<")
         let [l:lbuf, l:lline, l:lcol, l:loff] = getpos("'>")
         let [l:left_col, l:right_col]  = sort([l:fcol + l:foff, l:lcol + l:loff], "s:NrCmp")
+        if &selection ==# "exclusive" && l:fcol + l:foff < l:lcol + l:loff
+            let l:right_col -= 1
+        endif
         let l:numlines = (l:lline - l:fline) + 1
         let l:numcols = (l:right_col - l:left_col)
 
@@ -329,7 +338,7 @@ function! s:SchleppDupBlock(dir)
             endif
             execute "normal! gvy'>j" . l:left_col . "|Pgv"
         elseif a:dir ==? "left"
-            execute "normal! gvyP" . l:numcols . "l\<C-v>" . l:numcols . "l" . (l:numlines - 1) . "jo"
+            execute "normal! gvyP" . l:numcols . "l\<C-v>" . (l:numcols + (&selection ==# 'exclusive')) . "l" . (l:numlines - 1) . "jo"
         elseif a:dir ==? "right"
             normal! gvyPgv
         else
@@ -342,6 +351,9 @@ function! s:SchleppDupBlock(dir)
             let [l:fbuf, l:fline, l:fcol, l:foff] = getpos("'<")
             let [l:lbuf, l:lline, l:lcol, l:loff] = getpos("'>")
             let [l:left_col, l:right_col]  = sort([l:fcol + l:foff, l:lcol + l:loff])
+            if &selection ==# "exclusive" && l:fcol + l:foff < l:lcol + l:loff
+                let l:right_col -= 1
+            endif
             for l:linenum in range(l:fline, l:lline)
                 if l:right_col == len(getline(l:linenum))
                     call setline(l:linenum, substitute(getline(l:linenum), "\\s\\+$", "", ""))
