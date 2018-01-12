@@ -58,6 +58,12 @@ function! s:Schlepp(dir, ...) range
 "       Work with a count specifier eg. [count]<Up> moves lines count times
 "       Maybe: Make word with a motion
 
+    "Avoid errors in read-only buffers
+    if ! &modifiable
+        echo 'Read only buffer'
+        call s:ResetSelection()
+        return
+    endif
     "Get what visual mode was being used
     normal! gv
     let l:md = mode()
@@ -249,6 +255,13 @@ noremap <SID>SchleppDup      :call <SID>SchleppDup()<CR>
 "{{{ s:SchleppDup(...) range
 function! s:SchleppDup(...) range
 " Duplicates the selected lines/block of text
+
+    "Avoid errors in read-only buffers
+    if ! &modifiable
+        echo 'Read only buffer'
+        call s:ResetSelection()
+        return
+    endif
 
     "Get mode
     normal! gv
