@@ -1,5 +1,7 @@
 VIM-Schlepp
 ===========
+![Schlepp in action](https://raw.githubusercontent.com/pinealan/vim-schlepp/master/schlepp-in-action.gif)
+
 Vim plugin to allow the movement of lines (or blocks) of text around easily.
 Inspired by Damian Conway's DragVisuals from his
 [More Instantly Better Vim](http://programming.oreilly.com/2013/10/more-instantly-better-vim.html)
@@ -19,7 +21,7 @@ Schlepp also lets you duplicate selections of text
 
 Additionally run for more info
 ```
-:help schlepp 
+:help schlepp
 ```
 
 Setup
