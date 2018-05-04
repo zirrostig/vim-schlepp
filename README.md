@@ -1,5 +1,7 @@
 VIM-Schlepp
 ===========
+![Schlepp in action](https://raw.githubusercontent.com/pinealan/vim-schlepp/master/schlepp-in-action.gif)
+
 Vim plugin to allow the movement of lines (or blocks) of text around easily.
 Inspired by Damian Conway's DragVisuals from his
 [More Instantly Better Vim](http://programming.oreilly.com/2013/10/more-instantly-better-vim.html)
@@ -19,7 +21,7 @@ Schlepp also lets you duplicate selections of text
 
 Additionally run for more info
 ```
-:help schlepp 
+:help schlepp
 ```
 
 Setup
@@ -82,7 +84,7 @@ text is all the way left.
 To allow the 'Squishing' of text add this line to your vimrc
 ```viml
 let g:Schlepp#allowSquishingLines = 1
-let g:Schlepp#allowSquishingBlocks = 1
+let g:Schlepp#allowSquishingBlock = 1
 ```
 
 To disable trailing whitespace removal on block move
