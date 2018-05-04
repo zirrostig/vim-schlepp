@@ -82,7 +82,7 @@ text is all the way left.
 To allow the 'Squishing' of text add this line to your vimrc
 ```viml
 let g:Schlepp#allowSquishingLines = 1
-let g:Schlepp#allowSquishingBlocks = 1
+let g:Schlepp#allowSquishingBlock = 1
 ```
 
 To disable trailing whitespace removal on block move
