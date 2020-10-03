@@ -1,6 +1,6 @@
 VIM-Schlepp
 ===========
-![Schlepp in action](https://raw.githubusercontent.com/pinealan/vim-schlepp/master/schlepp-in-action.gif)
+![Schlepp in action](schlepp-in-action.gif)
 
 Vim plugin to allow the movement of lines (or blocks) of text around easily.
 Inspired by Damian Conway's DragVisuals from his
