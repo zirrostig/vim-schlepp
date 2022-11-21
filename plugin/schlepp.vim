@@ -244,13 +244,13 @@ noremap <unique> <script> <Plug>SchleppDupUp <SID>SchleppDupUp
 noremap <unique> <script> <Plug>SchleppDupDown <SID>SchleppDupDown
 noremap <unique> <script> <Plug>SchleppDupLeft <SID>SchleppDupLeft
 noremap <unique> <script> <Plug>SchleppDupRight <SID>SchleppDupRight
-noremap <unique> <script> <Plug>SchleppDup <SID>SchleppDup
+noremap <unique> <script> <Plug>SchleppDupSmart <SID>SchleppDupSmart
 
 noremap <SID>SchleppDupUp    :call <SID>SchleppDup("Up")<CR>
 noremap <SID>SchleppDupDown  :call <SID>SchleppDup("Down")<CR>
 noremap <SID>SchleppDupLeft  :call <SID>SchleppDup("Left")<CR>
 noremap <SID>SchleppDupRight :call <SID>SchleppDup("Right")<CR>
-noremap <SID>SchleppDup      :call <SID>SchleppDup()<CR>
+noremap <SID>SchleppDupSmart :call <SID>SchleppDup()<CR>
 "}}}
 "{{{ s:SchleppDup(...) range
 function! s:SchleppDup(...) range
